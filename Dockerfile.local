@@ -1,0 +1,33 @@
+FROM debian:jessie
+
+MAINTAINER Chris Fordham <chris@fordham-nagy.id.au>
+
+# This version of the Docker file assumes that the binaries
+# are pre-downloaded locally. You can get the JDK package using:
+# docker run -it --name make-jpkg flaccid/make-jpkg
+# docker cp make-jpkg:/tmp/oracle-java8-jdk_8u91_amd64.deb ./
+# docker rm make-jpkg
+
+COPY oracle-java8-jdk_8u91_amd64.deb /tmp/
+COPY atlassian-bamboo-5.12.2.1.tar.gz /tmp/
+
+WORKDIR /tmp
+
+RUN dpkg -i oracle-java8-jdk*.deb && \
+    update-alternatives --auto java && \
+    apt-get -y clean && \
+    tar zxvf atlassian-bamboo-5.12.2.1.tar.gz && \
+    mv -v atlassian-bamboo-5.12.2.1 /opt/bamboo && \
+    sed -i 's/.*bamboo.home.*/bamboo.home= \/var\/opt\/bamboo\/home/' \
+      /opt/bamboo/atlassian-bamboo/WEB-INF/classes/bamboo-init.properties && \
+        rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+VOLUME /opt/bamboo
+VOLUME /var/opt/bamboo/home
+
+EXPOSE 8085
+EXPOSE 54663
+
+WORKDIR /opt/bamboo
+
+CMD ["bin/start-bamboo.sh", "-fg"]
