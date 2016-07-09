@@ -8,6 +8,13 @@ A Docker image for Atlassian Bamboo server.
 
     $ docker build -t bamboo-server .
 
+Or place the JDK package locally:
+
+    $ docker run -itd --name make-jpkg flaccid/make-jpkg
+    $ docker cp make-jpkg:/tmp/oracle-java8-jdk_8u91_amd64.deb ./
+    $ docker rm make-jpkg
+    $ docker build -t bamboo-server -f Dockerfile.local .
+
 ### Run
 
     $ docker run -itd -p 8085:8085 bamboo-server
