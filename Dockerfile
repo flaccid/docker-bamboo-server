@@ -37,6 +37,7 @@ VOLUME /opt/bamboo
 VOLUME /var/opt/bamboo/home
 
 EXPOSE 8085
+EXPOSE 54663
 
 WORKDIR /opt/bamboo
 CMD ["bin/start-bamboo.sh", "-fg"]
